@@ -1,6 +1,6 @@
 resource "hcloud_server" "github_runner" {
   count       = var.github_actions_runner_count
-  name        = format("%s-%s-%d", "github-runner", var.hetzner_machine_os, count.index + 1)
+  name        = format("%s-%s-%s-%d", "github-runner", var.hetzner_machine_os, random_uuid.hetzner_machine.result, count.index + 1)
   server_type = var.hetzner_machine_type
   image       = var.hetzner_machine_os
   ssh_keys    = [hcloud_ssh_key.admin_ssh_key.id]
