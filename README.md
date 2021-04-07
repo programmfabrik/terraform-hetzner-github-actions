@@ -1,6 +1,6 @@
 # terraform-hetzner-github-actions
 
-This repository provides the functionality to deploy the github actions runner on the hetzner cloud infrastructure.
+This repository provides the functionality to deploy the github actions runner on the hetzner cloud infrastructure. This repository is used to set up the test infrastructure for the fylr application.
 
 ## Avaiable variables
 
@@ -13,3 +13,18 @@ This repository provides the functionality to deploy the github actions runner o
 | `github_actions_provision_token` | string | "" | Defines the authentication token used to register new Github action runners. |
 | `github_actions_runner_replace_existing` | bool | false | Specifies whether to replace existing Github action runners with the same name. |
 | `github_actions_runner_labels` | string | "" | Defines a list of labels used to identify the runners. The list is divided by separating the individual entries with `,`. |
+
+## Example terraform.tfvars
+
+```ini
+hcloud_token="my-hetzner-cloud-api-token"
+
+hetzner_machine_type="cpx31"
+hetzner_machine_os="debian-10"
+
+github_actions_provision_url="https://github.com/programmfabrik/terraform-hetzner-github-actions"
+github_actions_provision_token="my-github-actions-register-token"
+
+github_actions_runner_replace_existing=true
+github_actions_runner_labels="debian-buster,debian-10"
+```
