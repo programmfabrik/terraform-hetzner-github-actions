@@ -40,23 +40,13 @@ variable "hetzner_machine_os" {
     type = string
 }
 
-variable "github_actions_provision_url" {
-    description = "Defines the github actions target url. Can be a specific repository or company"
-    default = ""
-    type = string
-}
-
-variable "github_actions_provision_token" {
-    description = "Defines the github actions self hosted runner registration token"
-    default = ""
-    type = string
-}
-
 variable "github_actions_runner_count" {
     description = "Defines the amount of runners that should be provisioned"
     default = 1
     type = number
 }
+
+//
 
 variable "github_actions_runner_labels" {
     description = "Defines a list of labels used to identify the runner. The list is a simple string seperated by ','"
@@ -68,4 +58,24 @@ variable "github_actions_runner_replace_existing" {
     description = "Defines if existing runners should be destroyed"
     default = false
     type = bool
+}
+
+variable "github_repository_owner" {
+    description = "Defines the repository owner"
+    type = string
+}
+
+variable "github_repository_name" {
+    description = "Defines the repository name"
+    type = string
+}
+
+variable "github_authentication_user" {
+    description = "Defines the authentication username"
+    type = string
+}
+
+variable "github_authentication_token" {
+    description = "Defines the authentication personal access token"
+    type = string
 }

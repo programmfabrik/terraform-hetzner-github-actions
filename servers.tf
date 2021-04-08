@@ -11,10 +11,15 @@ resource "hcloud_server" "github_runner" {
     type        = "ssh"
     private_key = file(var.ssh_private_key)
   }
-
   provisioner "file" {
     source      = "scripts/remote/setup-runner.sh"
     destination = "/srv/setup-runner.sh"
+
+  }
+
+  provisioner "file" {
+    source      = "scripts/remote/gh-runner-cli"
+    destination = "/srv/gh-runner-cli"
   }
 
   provisioner "remote-exec" {
@@ -33,12 +38,27 @@ resource "hcloud_server" "github_runner" {
         "curl -o actions-runner-linux-x64-2.277.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.277.1/actions-runner-linux-x64-2.277.1.tar.gz",
         "tar xzf ./actions-runner-linux-x64-2.277.1.tar.gz",
         "adduser github-runner --disabled-login --gecos ''",
-        "chown -R github-runner. /home/github-runner/.ssh",
         "usermod -aG docker github-runner",
         "echo 'github-runner   ALL=(ALL:ALL)NOPASSWD:ALL' > /etc/sudoers.d/github-runner",
         "chown -R github-runner /srv",
-        "chmod +x /srv/setup-runner.sh",
-        "su github-runner -c '/srv/setup-runner.sh ${var.github_actions_provision_url} ${var.github_actions_provision_token} ${var.github_actions_runner_labels} ${var.github_actions_runner_replace_existing}'"
+        "chmod +x /srv/setup-runner.sh /srv/gh-runner-cli",
+        "su github-runner -c '/srv/setup-runner.sh ${var.github_authentication_user} ${var.github_authentication_token} ${var.github_repository_owner} ${var.github_repository_name} ${var.github_actions_runner_labels} ${var.github_actions_runner_replace_existing}'"
         ]
+  }
+}
+
+resource "null_resource" "deprovision" {
+  triggers = {
+    machine_names = join(",", tolist(hcloud_server.github_runner.*.name))
+    github_user = var.github_authentication_user
+    github_user_token = var.github_authentication_token
+    github_repo_name = var.github_repository_name
+    github_repo_owner = var.github_repository_owner
+  }
+
+  provisioner "local-exec" {
+      when = destroy
+      #command = "./scripts/remote/gh-runner-cli repo runner destroy-by-name --username ${self.triggers.github_user} --token ${self.triggers.github_user_token} --name ${self.triggers.github_repo_name} --owner ${self.triggers.github_repo_owner} --runner-name ${each.value.name}"
+      command = "./scripts/local/destroy_runner.sh ${self.triggers.machine_names} ${self.triggers.github_user} ${self.triggers.github_user_token} ${self.triggers.github_repo_name} ${self.triggers.github_repo_owner}"
   }
 }
