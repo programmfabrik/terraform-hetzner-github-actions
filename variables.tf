@@ -85,3 +85,9 @@ variable "github_authentication_token" {
     description = "Defines the authentication personal access token"
     type = string
 }
+
+variable additional_public_key_ids {
+    description = "Adds public keys to the server that are already registered at hetzner"
+    default = []
+    type = list(string)
+}
