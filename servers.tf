@@ -42,6 +42,7 @@ resource "hcloud_server" "github_runner" {
         "echo 'github-runner   ALL=(ALL:ALL)NOPASSWD:ALL' > /etc/sudoers.d/github-runner",
         "chown -R github-runner /srv",
         "chmod +x /srv/setup-runner.sh /srv/gh-runner-cli",
+        "mv /srv/actions-runner/run.sh /srv/actions-runner/run.sh.old"
         "su github-runner -c '/srv/setup-runner.sh ${var.github_authentication_user} ${var.github_authentication_token} ${var.github_repository_owner} ${var.github_repository_name} ${var.github_actions_runner_labels} ${var.github_actions_runner_replace_existing}'"
         ]
   }
@@ -58,7 +59,6 @@ resource "null_resource" "deprovision" {
 
   provisioner "local-exec" {
       when = destroy
-      #command = "./scripts/remote/gh-runner-cli repo runner destroy-by-name --username ${self.triggers.github_user} --token ${self.triggers.github_user_token} --name ${self.triggers.github_repo_name} --owner ${self.triggers.github_repo_owner} --runner-name ${each.value.name}"
       command = "./scripts/local/destroy_runner.sh ${self.triggers.machine_names} ${self.triggers.github_user} ${self.triggers.github_user_token} ${self.triggers.github_repo_name} ${self.triggers.github_repo_owner}"
   }
 }
