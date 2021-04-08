@@ -26,7 +26,7 @@ resource "hcloud_server" "github_runner" {
     inline = [
         "apt-get update -y", 
         "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y", 
-        "DEBIAN_FRONTEND=noninteractive apt-get install sudo git vim tmux apt-transport-https ca-certificates curl gnupg lsb-release gcc build-essential ffmpeg imagemagick sqlite3 libopenjp2-tools libopenjp2-7 libopenjp2-7-dev rsync make pkg-config exiftool ghostscript xsltproc -y",
+        "DEBIAN_FRONTEND=noninteractive apt-get install sudo git vim tmux apt-transport-https ca-certificates curl gnupg lsb-release gcc build-essential ffmpeg imagemagick sqlite3 libopenjp2-tools libopenjp2-7 libopenjp2-7-dev rsync make pkg-config exiftool ghostscript xsltproc gnupg2 pass -y",
         "echo '127.0.0.1       fylr-server-postgres    fylr-server-sqlite      execserver      minio2  postgres2       elasticsearch2' >> /etc/hosts",
         "curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
         "echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian buster stable' | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
