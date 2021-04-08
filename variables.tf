@@ -23,8 +23,14 @@ variable "ssh_username" {
     type = string
 }
 
+variable "ssh_key_name" {
+    description = "Defines the name for the ssh key"
+    default = "admin_ssh_key"
+    type = string
+}
+
 resource "hcloud_ssh_key" "admin_ssh_key" {
-    name       = "admin_ssh_key"
+    name       = var.ssh_key_name
     public_key = file(var.ssh_public_key)
 }
 
