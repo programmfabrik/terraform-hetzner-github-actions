@@ -46,48 +46,60 @@ variable "hetzner_machine_os" {
     type = string
 }
 
-variable "github_actions_runner_count" {
-    description = "Defines the amount of runners that should be provisioned"
-    default = 1
-    type = number
+variable hetzner_additional_public_key_ids {
+    description = "Adds public keys to the server that are already registered at hetzner"
+    default = []
+    type = list(string)
+}
+
+variable hetzner_machine_additional_packages {
+    description = "Defines additional packages that must be installed on the machine."
+    default = ""
+    type = string
 }
 
 //
 
+variable "github_actions_runner_count" {
+    description = "Defines the number of runners to be provided. This option is equal to Machines at hetzner."
+    default = 1
+    type = number
+}
+
 variable "github_actions_runner_labels" {
-    description = "Defines a list of labels used to identify the runner. The list is a simple string seperated by ','"
+    description = "Defines a list of labels used to identify the runners. The list is divided by separating the individual entries with `,`."
     default = ""
     type = string
 }
 
 variable "github_actions_runner_replace_existing" {
-    description = "Defines if existing runners should be destroyed"
+    description = "Specifies whether to replace existing Github action runners with the same name."
     default = false
     type = bool
 }
 
-variable "github_repository_owner" {
-    description = "Defines the repository owner"
+variable "github_owner" {
+    description = "Defines the organisation name or repository owner."
     type = string
 }
 
 variable "github_repository_name" {
-    description = "Defines the repository name"
+    description = "Sets the name of the repository. This option is only used if you use self-hosted Github runners at the repository level."
     type = string
 }
 
 variable "github_authentication_user" {
-    description = "Defines the authentication username"
+    description = "Sets the user used for issuing new registration tokens. Ensure that the user has the appropriate permissions. "
     type = string
 }
 
 variable "github_authentication_token" {
-    description = "Defines the authentication personal access token"
+    description = " Sets the personal access token for the configured user in the variable github_authentication_user."
     type = string
 }
 
-variable additional_public_key_ids {
-    description = "Adds public keys to the server that are already registered at hetzner"
-    default = []
-    type = list(string)
+variable "github_runner_type" {
+    description = "Defines the github runner type. Available values are: repo, org"
+    default = "repo"
+    type = string
 }

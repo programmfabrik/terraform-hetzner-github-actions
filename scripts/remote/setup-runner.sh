@@ -2,9 +2,14 @@
 
 cd /srv/actions-runner
 
-registration_token=$(../gh-runner-cli repo runner provision-token --username=$1 --token=$2 --owner=$3 --name=$4)
-
-./config.sh --unattended --url https://github.com/$3/$4 --token $registration_token --name $(hostname) --labels $5 --replace $6 --work _work
+case "$GH_RUNNER_TYPE" in
+    "repo")
+        registration_token=$(../gh-runner-cli repo runner provision-token --username=$GH_USERNAME --token=$GH_TOKEN --owner=$GH_OWNER --name=$GH_NAME)
+        ./config.sh --unattended --url https://github.com/$GH_OWNER/$GH_NAME --token $registration_token --name $(hostname) --labels $GH_LABELS --replace $GH_REPLACE_RUNNERS --work _work;;
+    "org")
+        registration_token=$(../gh-runner-cli org runner provision-token --username=$GH_USERNAME --token=$GH_TOKEN --name=$GH_OWNER)
+        ./config.sh --unattended --url https://github.com/$GH_OWNER --token $registration_token --name $(hostname) --labels $GH_LABELS --replace $GH_REPLACE_RUNNERS --work _work;;
+esac
 
 sudo ./svc.sh install
 sudo ./svc.sh start
