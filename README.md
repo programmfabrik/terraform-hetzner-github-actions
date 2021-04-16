@@ -7,24 +7,67 @@ This repository provides the functionality to deploy the github actions runner o
 | Variable | Type | Default value | Description |
 |----------|------|---------------|-------------|
 | `hcloud_token` | string | "" | Defines the authentication token with which new machines are registered with the [hetzner cloud](https://www.hetzner.com/cloud). |
-| `hetzner_machine_type` | string | "cx11" | Define the machine type to be used. |
+| `ssh_private_key` | string | "~/.ssh/id_rsa" | Defines the path to the location of the private key. The private key is used together with the public key to connect to the machine. |
+| `ssh_public_key` | string | "~/.ssh/id_rsa.pub" | Defines the path to the location of the public key. The public key is used together with the private key to connect to the machine. |
+| `ssh_key_name` | string | `admin_ssh_key` | Defines the name for the ssh key added to the hetzner cloud. |
+| `hetzner_machine_type` | string | "cx11" | Sets the machine type to use. |
 | `hetzner_machine_os` | string | "debian-10" | Defines the machine operating system to be installed. |
-| `github_actions_provision_url` | string | "" | Specifies the location to use for registering new devices. Can be a repository or a company. Example: `https://github.com/programmfabrik/terraform-hetzner-github-actions`. |
-| `github_actions_provision_token` | string | "" | Defines the authentication token used to register new Github action runners. |
-| `github_actions_runner_replace_existing` | bool | false | Specifies whether to replace existing Github action runners with the same name. |
+| `hetzner_additional_public_key_ids` | []string | [] | Adds public keys to the server that are already registered with hetzner |
+| `github_owner` | string | | Defines the organisation name or repository owner. |
+| `github_repository_name` | string | | Sets the name of the repository. This option is only used if you use self-hosted Github runners at the repository level. |
+| `github_authentication_user` | string | | Sets the user used for issuing new registration tokens. Ensure that the user has the appropriate permissions.  |
+| `github_authentication_token` | string | | Sets the personal access token for the configured user in the variable `github_authentication_user`. |
+| `hetzner_machine_additional_packages` | string | "" | Defines additional packages that must be installed on the machine. Each package name must be separated by a space ` `. |
+| `github_actions_runner_count` | number | 1 | Defines the number of runners to be provided. This option is equal to Machines at hetzner. |
 | `github_actions_runner_labels` | string | "" | Defines a list of labels used to identify the runners. The list is divided by separating the individual entries with `,`. |
+| `github_actions_runner_replace_existing` | bool | false | Specifies whether to replace existing Github action runners with the same name. |
+| `github_owner` | string | "" | Defines the organisation name or repository owner. |
+| `github_repository_name` | string | "" | Sets the name of the repository. This option is only used if you use self-hosted Github runners at the repository level. |
+| `github_authentication_user` | string | | Sets the user used for issuing new registration tokens. Ensure that the user has the appropriate permissions. |
+| `github_authentication_token` | string | | Sets the personal access token for the configured user in the variable github_authentication_user. |
+| `github_runner_type` | string | "repo" | Defines the github runner type. Available values are: repo, org |
 
-## Example terraform.tfvars
+## Example terraform.tfvars, which provides the runners at repository level
 
 ```ini
-hcloud_token="my-hetzner-cloud-api-token"
+hcloud_token="<my-hcloud-token>"
 
-hetzner_machine_type="cpx31"
+hetzner_machine_type="cx21"
 hetzner_machine_os="debian-10"
+hetzner_additional_public_key_ids=["username@local-system"]
+hetzner_machine_additional_packages=""
 
-github_actions_provision_url="https://github.com/programmfabrik/terraform-hetzner-github-actions"
-github_actions_provision_token="my-github-actions-register-token"
+github_actions_runner_labels="example"
+github_actions_runner_replace_existing=false
+github_actions_runner_count=3
 
-github_actions_runner_replace_existing=true
-github_actions_runner_labels="debian-buster,debian-10"
+github_owner="example-repo-owner"
+github_repository_name="example-repo-name"
+github_authentication_user="example-bot"
+github_authentication_token="<example-bot personal access token>"
+
+ssh_key_name="example-bot-ssh-key"
+```
+
+## Example terraform.tfvars, which provides the runners at organisation level
+
+```ini
+hcloud_token="<my-hcloud-token>"
+
+hetzner_machine_type="cx21"
+hetzner_machine_os="debian-10"
+hetzner_additional_public_key_ids=["username@local-system"]
+hetzner_machine_additional_packages=""
+
+github_actions_runner_labels="example"
+github_actions_runner_replace_existing=false
+github_actions_runner_count=3
+
+github_owner="example-repo-owner"
+github_authentication_user="example-bot"
+github_authentication_token="<example-bot personal access token>"
+
+ssh_key_name="example-bot-ssh-key"
+
+github_runner_type="org"
 ```

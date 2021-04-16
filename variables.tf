@@ -6,7 +6,7 @@ variable "hcloud_token" {
 }
 
 variable "ssh_private_key" {
-    description = "Path to the location where the private key is stored to connect to the machines"
+    description = "Defines the path to the location of the private key. The private key is used together with the public key to connect to the machine."
     default     = "~/.ssh/id_rsa"
     type = string
 }
@@ -35,13 +35,13 @@ resource "hcloud_ssh_key" "admin_ssh_key" {
 }
 
 variable "hetzner_machine_type" {
-    description = "Defines the hetzner machine"
+    description = "Sets the machine type to use."
     default = "cx11"
     type = string
 }
 
 variable "hetzner_machine_os" {
-    description = "Defines the hetzner machine operation system"
+    description = "Defines the machine operating system to be installed."
     default = "debian-10"
     type = string
 }
@@ -53,7 +53,7 @@ variable hetzner_additional_public_key_ids {
 }
 
 variable hetzner_machine_additional_packages {
-    description = "Defines additional packages that must be installed on the machine."
+    description = "Defines additional packages that must be installed on the machine. Each package name must be separated by a space ` `."
     default = ""
     type = string
 }
@@ -80,11 +80,13 @@ variable "github_actions_runner_replace_existing" {
 
 variable "github_owner" {
     description = "Defines the organisation name or repository owner."
+    default = ""
     type = string
 }
 
 variable "github_repository_name" {
     description = "Sets the name of the repository. This option is only used if you use self-hosted Github runners at the repository level."
+    default = ""
     type = string
 }
 
