@@ -13,10 +13,6 @@ This repository provides the functionality to deploy the github actions runner o
 | `hetzner_machine_type` | string | "cx11" | Sets the machine type to use. |
 | `hetzner_machine_os` | string | "debian-10" | Defines the machine operating system to be installed. |
 | `hetzner_additional_public_key_ids` | []string | [] | Adds public keys to the server that are already registered with hetzner |
-| `github_owner` | string | | Defines the organisation name or repository owner. |
-| `github_repository_name` | string | | Sets the name of the repository. This option is only used if you use self-hosted Github runners at the repository level. |
-| `github_authentication_user` | string | | Sets the user used for issuing new registration tokens. Ensure that the user has the appropriate permissions.  |
-| `github_authentication_token` | string | | Sets the personal access token for the configured user in the variable `github_authentication_user`. |
 | `hetzner_machine_additional_packages` | string | "" | Defines additional packages that must be installed on the machine. Each package name must be separated by a space ` `. |
 | `github_actions_runner_count` | number | 1 | Defines the number of runners to be provided. This option is equal to Machines at hetzner. |
 | `github_actions_runner_labels` | string | "" | Defines a list of labels used to identify the runners. The list is divided by separating the individual entries with `,`. |
