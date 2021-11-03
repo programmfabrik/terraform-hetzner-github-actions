@@ -58,6 +58,12 @@ variable hetzner_machine_additional_packages {
     type = string
 }
 
+variable hetzner_machine_location {
+    description = "Specifies the location of the data center where the machine is to be deployed."
+    default = "nbg1"
+    type = string
+}
+
 //
 
 variable "github_actions_runner_count" {

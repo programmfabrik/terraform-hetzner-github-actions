@@ -14,6 +14,7 @@ This repository provides the functionality to deploy the github actions runner o
 | `hetzner_machine_os` | string | "debian-10" | Defines the machine operating system to be installed. |
 | `hetzner_additional_public_key_ids` | []string | [] | Adds public keys to the server that are already registered with hetzner |
 | `hetzner_machine_additional_packages` | string | "" | Defines additional packages that must be installed on the machine. Each package name must be separated by a space ` `. |
+| `hetzner_machine_location` | string | nbg1 | Specifies the location of the data center where the machine is to be deployed. |
 | `github_actions_runner_count` | number | 1 | Defines the number of runners to be provided. This option is equal to Machines at hetzner. |
 | `github_actions_runner_labels` | string | "" | Defines a list of labels used to identify the runners. The list is divided by separating the individual entries with `,`. |
 | `github_actions_runner_replace_existing` | bool | false | Specifies whether to replace existing Github action runners with the same name. |

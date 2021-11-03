@@ -3,6 +3,7 @@ resource "hcloud_server" "github_runner" {
   name        = format("%s-%s-%s-%d", "github-runner", var.hetzner_machine_os, random_uuid.hetzner_machine.result, count.index + 1)
   server_type = var.hetzner_machine_type
   image       = var.hetzner_machine_os
+  location    = var.hetzner_machine_location
   ssh_keys    = concat([hcloud_ssh_key.admin_ssh_key.id], var.hetzner_additional_public_key_ids)
 
   connection {
