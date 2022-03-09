@@ -3,7 +3,7 @@ locals {
 }
 
 resource "random_string" "hetzner_machine" {
-  length           = fill_char_length > 0 ? fill_char_length : 0
+  length           = local.fill_char_length > 0 ? local.fill_char_length : 0
   special          = false
 }
 
