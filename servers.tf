@@ -1,9 +1,15 @@
-resource "random_uuid" "hetzner_machine" {
+locals {
+  fill_char_length = 64-length("github-runner")-4
+}
+
+resource "random_string" "hetzner_machine" {
+  length           = fill_char_length > 0 ? fill_char_length : 0
+  special          = false
 }
 
 resource "hcloud_server" "github_runner" {
   count       = var.github_actions_runner_count
-  name        = format("%s-%s-%s-%d", "github-runner", var.hetzner_machine_os, random_uuid.hetzner_machine.result, count.index + 1)
+  name        = format("%s-%s-%d", "github-runner", random_string.hetzner_machine.result, count.index + 1)
   server_type = var.hetzner_machine_type
   image       = var.hetzner_machine_os
   location    = var.hetzner_machine_location
