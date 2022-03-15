@@ -1,6 +1,15 @@
+locals {
+  fill_char_length = 64-length("github-runner")-4
+}
+
+resource "random_string" "hetzner_machine" {
+  length           = local.fill_char_length > 0 ? local.fill_char_length : 0
+  special          = false
+}
+
 resource "hcloud_server" "github_runner" {
   count       = var.github_actions_runner_count
-  name        = format("%s-%s-%s-%d", "github-runner", var.hetzner_machine_os, random_uuid.hetzner_machine.result, count.index + 1)
+  name        = format("%s-%s-%d", "github-runner", random_string.hetzner_machine.result, count.index + 1)
   server_type = var.hetzner_machine_type
   image       = var.hetzner_machine_os
   location    = var.hetzner_machine_location
@@ -15,7 +24,6 @@ resource "hcloud_server" "github_runner" {
   provisioner "file" {
     source      = "scripts/remote/setup-runner.sh"
     destination = "/srv/setup-runner.sh"
-
   }
 
   provisioner "file" {
@@ -44,7 +52,7 @@ resource "hcloud_server" "github_runner" {
         "chown -R github-runner /srv",
         "chmod +x /srv/setup-runner.sh /srv/gh-runner-cli",
         "mv /srv/actions-runner/run.sh /srv/actions-runner/run.sh.old",
-        "su github-runner -c 'export GH_USERNAME=${var.github_authentication_user}; export GH_TOKEN=${var.github_authentication_token}; export GH_OWNER=${var.github_owner}; export GH_NAME=${var.github_repository_name}; export GH_LABELS=${var.github_actions_runner_labels}; export GH_REPLACE_RUNNERS=${var.github_actions_runner_replace_existing}; export GH_RUNNER_TYPE=${var.github_runner_type}; /srv/setup-runner.sh'"
+        "su github-runner -c 'export CUSTOM_HOSTNAME=${self.name}; export GH_USERNAME=${var.github_authentication_user}; export GH_TOKEN=${var.github_authentication_token}; export GH_OWNER=${var.github_owner}; export GH_NAME=${var.github_repository_name}; export GH_LABELS=${var.github_actions_runner_labels}; export GH_REPLACE_RUNNERS=${var.github_actions_runner_replace_existing}; export GH_RUNNER_TYPE=${var.github_runner_type}; /srv/setup-runner.sh'"
         ]
   }
 }
