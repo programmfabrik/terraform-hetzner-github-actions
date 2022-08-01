@@ -55,6 +55,10 @@ resource "hcloud_server" "github_runner" {
       "su github-runner -c 'export CUSTOM_HOSTNAME=${self.name}; export GH_USERNAME=${var.github_authentication_user}; export GH_TOKEN=${var.github_authentication_token}; export GH_OWNER=${var.github_owner}; export GH_NAME=${var.github_repository_name}; export GH_LABELS=${var.github_actions_runner_labels}; export GH_REPLACE_RUNNERS=${var.github_actions_runner_replace_existing}; export GH_RUNNER_TYPE=${var.github_runner_type}; /srv/setup-runner.sh'"
     ]
   }
+
+  timeouts {
+    create = "10m"
+  }
 }
 
 resource "null_resource" "deprovision" {
