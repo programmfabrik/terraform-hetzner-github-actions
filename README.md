@@ -9,7 +9,7 @@ This repository provides the functionality to deploy the github actions runner o
 | `hcloud_token` | string | "" | Defines the authentication token with which new machines are registered with the [hetzner cloud](https://www.hetzner.com/cloud). |
 | `ssh_private_key` | string | "~/.ssh/id_rsa" | Defines the path to the location of the private key. The private key is used together with the public key to connect to the machine. |
 | `ssh_public_key` | string | "~/.ssh/id_rsa.pub" | Defines the path to the location of the public key. The public key is used together with the private key to connect to the machine. |
-| `ssh_key_name` | string | `admin_ssh_key` | Defines the name for the ssh key added to the hetzner cloud. |
+| `ssh_key_name` | string | `admin_ssh_key` | Defines the name for the ssh key added to the hetzner cloud, as defined in ssh_private_key and ssh_public_key. Must be different from hetzner_additional_public_key_ids. |
 | `hetzner_machine_type` | string | "cx11" | Sets the machine type to use. |
 | `hetzner_machine_os` | string | "debian-10" | Defines the machine operating system to be installed. |
 | `hetzner_additional_public_key_ids` | []string | [] | Adds public keys to the server that are already registered with hetzner |
@@ -51,19 +51,23 @@ ssh_key_name="example-bot-ssh-key"
 ```ini
 hcloud_token="<my-hcloud-token>"
 
-hetzner_machine_type="cx21"
+hetzner_machine_type="cpx21"
 hetzner_machine_os="debian-10"
+# one of the keys in the hcloud project
 hetzner_additional_public_key_ids=["username@local-system"]
+# not needed for runner
 hetzner_machine_additional_packages=""
 
+# comma separated list
 github_actions_runner_labels="example"
 github_actions_runner_replace_existing=false
 github_actions_runner_count=3
 
-github_owner="example-repo-owner"
+github_owner="programmfabrik"
 github_authentication_user="example-bot"
 github_authentication_token="<example-bot personal access token>"
 
+# not part of hetzner_additional_public_key_ids, see explanation above
 ssh_key_name="example-bot-ssh-key"
 
 github_runner_type="org"
