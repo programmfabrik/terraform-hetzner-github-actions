@@ -1,7 +1,12 @@
-output "print_machine_names_master" {
-  value = hcloud_server.github_runner.*.name
+output "runner_machine_names" {
+  value = module.hetzner_gh_runners.runner_machine_names
 }
 
-output "print_machine_ipv4_master" {
-  value = hcloud_server.github_runner.*.ipv4_address
+output "runner_ipv4_addresses" {
+  # create output with value if either one of the IP types are set
+  value = module.hetzner_gh_runners.runner_ipv4_addresses
+}
+
+output "runner_ipv6_addresses" {
+  value = module.hetzner_gh_runners.runner_ipv6_addresses
 }
