@@ -64,7 +64,7 @@ github_actions_runner_replace_existing=false
 github_actions_runner_count=3
 
 github_owner="programmfabrik"
-github_authentication_user="fylr-bot"
+github_authentication_user="example-bot"
 github_authentication_token="<example-bot personal access token>"
 
 # not part of hetzner_additional_public_key_ids, see explanation above
