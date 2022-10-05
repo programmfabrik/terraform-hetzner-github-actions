@@ -3,6 +3,7 @@
 variable "hcloud_token" {
   description = "Hetzner Cloud API token"
   type        = string
+  sensitive   = true
 }
 
 variable "ssh_private_key" {
@@ -27,11 +28,6 @@ variable "ssh_key_name" {
   description = "Defines the name for the ssh key"
   default     = "admin_ssh_key"
   type        = string
-}
-
-resource "hcloud_ssh_key" "admin_ssh_key" {
-  name       = var.ssh_key_name
-  public_key = file(var.ssh_public_key)
 }
 
 variable "hetzner_machine_type" {
@@ -62,6 +58,18 @@ variable "hetzner_machine_location" {
   description = "Specifies the location of the data center where the machine is to be deployed."
   default     = "nbg1"
   type        = string
+}
+
+variable "hetzner_ip_config" {
+  description = "Defines the IP configuration for the machine. The IP configuration is used to assign a static IP address to the machine."
+  default = {
+    ipv4_enabled = true
+    ipv6_enabled = true
+  }
+  type = object({
+    ipv4_enabled = bool
+    ipv6_enabled = bool
+  })
 }
 
 //
@@ -104,10 +112,17 @@ variable "github_authentication_user" {
 variable "github_authentication_token" {
   description = " Sets the personal access token for the configured user in the variable github_authentication_user."
   type        = string
+  sensitive   = true
 }
 
 variable "github_runner_type" {
   description = "Defines the github runner type. Available values are: repo, org"
   default     = "repo"
+  type        = string
+}
+
+variable "github_runner_release" {
+  description = "Defines the version of the github runner to be installed. The version must be specified in the format `2.277.1`."
+  default     = "2.298.1"
   type        = string
 }
