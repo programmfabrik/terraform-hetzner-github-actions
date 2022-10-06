@@ -24,5 +24,5 @@ do
                 --token "$github_user_token" \
                 --name "$github_owner" \
                 --runner-name "$i";;
-    esac    
+    esac
 done

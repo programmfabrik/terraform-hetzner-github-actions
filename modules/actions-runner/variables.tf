@@ -1,21 +1,7 @@
-# Set the variable value in *.tfvars file
-# or using the -var="hcloud_token=..." CLI option
-variable "hcloud_token" {
-  description = "Hetzner Cloud API token"
+variable "ssh_private_key" {
+  description = "Sets the value of the private key. We expect to find the public key in HCLOUD."
   type        = string
   sensitive   = true
-}
-
-variable "ssh_private_key" {
-  description = "Defines the path to the location of the private key. The private key is used together with the public key to connect to the machine."
-  default     = "~/.ssh/id_rsa"
-  type        = string
-}
-
-variable "ssh_public_key" {
-  description = "Public Key to authorized the access to the machines"
-  default     = "~/.ssh/id_rsa.pub"
-  type        = string
 }
 
 variable "ssh_username" {
@@ -110,7 +96,7 @@ variable "github_authentication_user" {
 }
 
 variable "github_authentication_token" {
-  description = " Sets the personal access token for the configured user in the variable github_authentication_user."
+  description = "Personal access token used to authenticate with Github. The token must have the `admin:org` scope and the necessary permissions to manage runners."
   type        = string
   sensitive   = true
 }
@@ -124,5 +110,13 @@ variable "github_runner_type" {
 variable "github_runner_release" {
   description = "Defines the version of the github runner to be installed. The version must be specified in the format `2.277.1`."
   default     = "2.298.1"
+  type        = string
+}
+
+// application settings
+
+variable "nodejs_version" {
+  description = "Defines the version of nodejs to be installed."
+  default     = "14"
   type        = string
 }

@@ -1,5 +1,23 @@
 locals {
   fill_char_length = 64 - length("github-runner") - 4
+
+  default_package_list = join(" ", [
+    "sudo",
+    "git",
+    "vim",
+    "tmux",
+    "apt-transport-https",
+    "ca-certificates",
+    "curl",
+    "gnupg",
+    "lsb-release",
+    "pass",
+    "jq",
+    "make",
+    "unzip",
+    "wget",
+  ])
+
 }
 
 resource "random_string" "hetzner_machine" {
@@ -13,39 +31,50 @@ resource "hcloud_server" "github_runner" {
   server_type = var.hetzner_machine_type
   image       = var.hetzner_machine_os
   location    = var.hetzner_machine_location
-  ssh_keys    = concat([hcloud_ssh_key.admin_ssh_key.id], var.hetzner_additional_public_key_ids)
+  ssh_keys    = var.hetzner_additional_public_key_ids
+  public_net {
+    ipv4_enabled = var.hetzner_ip_config.ipv4_enabled == false && var.hetzner_ip_config.ipv6_enabled == false ? true : var.hetzner_ip_config.ipv4_enabled
+    ipv6_enabled = var.hetzner_ip_config.ipv6_enabled
+  }
 
   connection {
     host        = self.ipv4_address
     user        = var.ssh_username
     type        = "ssh"
-    private_key = file(var.ssh_private_key)
+    private_key = var.ssh_private_key
   }
   provisioner "file" {
-    source      = "scripts/remote/setup-runner.sh"
+    source      = "${path.module}/scripts/remote/setup-runner.sh"
     destination = "/srv/setup-runner.sh"
   }
-
   provisioner "file" {
-    source      = "scripts/remote/gh-runner-cli"
+    source      = "${path.module}/scripts/remote/gh-runner-cli"
     destination = "/srv/gh-runner-cli"
   }
+  provisioner "file" {
+    source      = "${path.module}/scripts/remote/install.sh"
+    destination = "/srv/install.sh"
+  }
 
+  # remote package installations
   provisioner "remote-exec" {
     inline = [
-      "apt-get update -y",
-      "DEBIAN_FRONTEND=noninteractive apt-get upgrade -y",
-      "DEBIAN_FRONTEND=noninteractive apt-get install sudo git vim tmux apt-transport-https ca-certificates curl gnupg lsb-release pass ${var.hetzner_machine_additional_packages} -y",
-      "echo '127.0.0.1       fylr-server-postgres    fylr-server-sqlite      execserver      minio2  postgres2       elasticsearch2' >> /etc/hosts",
-      "curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
-      "echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian buster stable' | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
-      "apt-get update -y",
-      "apt-get install docker-ce docker-ce-cli containerd.io docker-compose -y",
-      "curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -",
+      # install additional packages
+      "sh /srv/install.sh ${local.default_package_list} ${var.hetzner_machine_additional_packages}",
+      # install docker
+      "curl -fsSL https://get.docker.com -o get-docker.sh",
+      "sh get-docker.sh",
+      "curl -sL https://deb.nodesource.com/setup_${var.nodejs_version}.x | sudo -E bash -",
       "apt install nodejs",
+    ]
+  }
+
+  # remote github runner setup
+  provisioner "remote-exec" {
+    inline = [
       "mkdir /srv/actions-runner && cd /srv/actions-runner",
-      "curl -o actions-runner-linux-x64-2.277.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.277.1/actions-runner-linux-x64-2.277.1.tar.gz",
-      "tar xzf ./actions-runner-linux-x64-2.277.1.tar.gz",
+      "curl -L https://github.com/actions/runner/releases/download/v${var.github_runner_release}/actions-runner-linux-x64-${var.github_runner_release}.tar.gz -o actions-runner-linux-x64-${var.github_runner_release}.tar.gz",
+      "tar xzf ./actions-runner-linux-x64-${var.github_runner_release}.tar.gz",
       "adduser github-runner --disabled-login --gecos ''",
       "usermod -aG docker github-runner",
       "echo 'github-runner   ALL=(ALL:ALL)NOPASSWD:ALL' > /etc/sudoers.d/github-runner",
@@ -73,6 +102,6 @@ resource "null_resource" "deprovision" {
 
   provisioner "local-exec" {
     when    = destroy
-    command = "./scripts/local/destroy_runner.sh ${self.triggers.machine_names} ${self.triggers.github_user} ${self.triggers.github_user_token} ${self.triggers.github_repo_name} ${self.triggers.github_repo_owner} ${self.triggers.github_runner_type}"
+    command = "${path.module}/scripts/local/destroy_runner.sh ${self.triggers.machine_names} ${self.triggers.github_user} ${self.triggers.github_user_token} ${self.triggers.github_repo_name} ${self.triggers.github_repo_owner} ${self.triggers.github_runner_type}"
   }
 }
