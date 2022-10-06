@@ -18,7 +18,6 @@ locals {
     "wget",
     "docker-compose",
   ])
-
 }
 
 resource "random_string" "hetzner_machine" {
@@ -103,6 +102,9 @@ resource "null_resource" "deprovision" {
 
   provisioner "local-exec" {
     when    = destroy
+    environment = {
+      GH_RUNNER_CLI_BIN_PATH = "${path.module}/scripts/remote/gh-runner-cli"
+    }
     command = "${path.module}/scripts/local/destroy_runner.sh ${self.triggers.machine_names} ${self.triggers.github_user} ${self.triggers.github_user_token} ${self.triggers.github_repo_name} ${self.triggers.github_repo_owner} ${self.triggers.github_runner_type}"
   }
 }
