@@ -64,6 +64,8 @@ resource "hcloud_server" "github_runner" {
       # install docker
       "curl -fsSL https://get.docker.com -o get-docker.sh",
       "sh get-docker.sh",
+      "curl -sL https://deb.nodesource.com/setup_${var.nodejs_version}.x | sudo -E bash -",
+      "apt install nodejs",
     ]
   }
 

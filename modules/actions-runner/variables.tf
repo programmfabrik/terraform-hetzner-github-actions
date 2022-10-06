@@ -113,3 +113,10 @@ variable "github_runner_release" {
   type        = string
 }
 
+// application settings
+
+variable "nodejs_version" {
+  description = "Defines the version of nodejs to be installed."
+  default     = "14"
+  type        = string
+}
