@@ -16,6 +16,7 @@ locals {
     "make",
     "unzip",
     "wget",
+    "docker-compose",
   ])
 
 }
