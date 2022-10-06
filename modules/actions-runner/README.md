@@ -44,6 +44,7 @@ No modules.
 | <a name="input_hetzner_machine_location"></a> [hetzner\_machine\_location](#input\_hetzner\_machine\_location) | Specifies the location of the data center where the machine is to be deployed. | `string` | `"nbg1"` | no |
 | <a name="input_hetzner_machine_os"></a> [hetzner\_machine\_os](#input\_hetzner\_machine\_os) | Defines the machine operating system to be installed. | `string` | `"debian-10"` | no |
 | <a name="input_hetzner_machine_type"></a> [hetzner\_machine\_type](#input\_hetzner\_machine\_type) | Sets the machine type to use. | `string` | `"cx11"` | no |
+| <a name="input_nodejs_version"></a> [nodejs\_version](#input\_nodejs\_version) | Defines the version of nodejs to be installed. | `string` | `"14"` | no |
 | <a name="input_ssh_key_name"></a> [ssh\_key\_name](#input\_ssh\_key\_name) | Defines the name for the ssh key | `string` | `"admin_ssh_key"` | no |
 | <a name="input_ssh_private_key"></a> [ssh\_private\_key](#input\_ssh\_private\_key) | Sets the value of the private key. We expect to find the public key in HCLOUD. | `string` | n/a | yes |
 | <a name="input_ssh_username"></a> [ssh\_username](#input\_ssh\_username) | Username that should be used to connect to the nodes | `string` | `"root"` | no |
