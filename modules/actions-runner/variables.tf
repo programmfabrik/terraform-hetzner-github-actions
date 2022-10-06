@@ -10,12 +10,6 @@ variable "ssh_username" {
   type        = string
 }
 
-variable "ssh_key_name" {
-  description = "Defines the name for the ssh key"
-  default     = "admin_ssh_key"
-  type        = string
-}
-
 variable "hetzner_machine_type" {
   description = "Sets the machine type to use."
   default     = "cx11"

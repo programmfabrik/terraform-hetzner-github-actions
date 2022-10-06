@@ -8,7 +8,6 @@ module "hetzner_gh_runners" {
 
   ssh_private_key                     = file(var.ssh_private_key)
   ssh_username                        = var.ssh_username
-  ssh_key_name                        = var.ssh_key_name
   hetzner_machine_type                = var.hetzner_machine_type
   hetzner_machine_os                  = var.hetzner_machine_os
   hetzner_additional_public_key_ids   = concat([hcloud_ssh_key.admin_ssh_key.id], var.hetzner_additional_public_key_ids)
