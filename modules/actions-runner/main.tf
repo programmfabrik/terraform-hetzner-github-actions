@@ -17,6 +17,8 @@ locals {
     "unzip",
     "wget",
     "docker-compose",
+    "apparmor",
+    "apparmor-utils",
   ])
 }
 
